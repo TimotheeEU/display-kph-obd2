@@ -4,7 +4,6 @@
 #include <FastLED.h>
 #include <Adafruit_GFX.h>
 #include <MCUFRIEND_kbv.h>
-#include "timer.h"
 #include "config.h"
 
 // ARRAY OF PID's VALUES
@@ -13,8 +12,6 @@ const int PIDS[] = {
     VEHICLE_SPEED,
     ENGINE_COOLANT_TEMPERATURE,
 };
-
-utils::timer display_timer(500);
 
 const int NUM_PIDS = sizeof(PIDS) / sizeof(PIDS[0]);
 
@@ -50,16 +47,12 @@ void setup()
     else
     {
       succesfullConn();
-      delay(2000);
       break;
     }
   }
 
   // SHOW TOP AND BOTTOM TITLE + VALUE TITLE AND SUBTEXT
   valueTitleText();
-
-  // START TIMER TO UPDATE VALUES READ FROM CAN
-  display_timer.start();
 }
 
 String floatToString(float value)
@@ -76,6 +69,10 @@ String floatToString(float value)
   return result;
 }
 
+float prevEngineRPM = 0.0;
+float prevVehicleSpeed = -1.0;
+float prevEngineCoolantTemp = 0.0;
+
 void loop()
 {
   // Float values read from the OBD2 CAN connection
@@ -88,17 +85,16 @@ void loop()
   String vehicleSpeed_s = floatToString(vehicleSpeed);
   String engineCoolantTemp_s = floatToString(engineCoolantTemp);
 
-  // DISPLAY 320x480
-  if (display_timer.check())
+  bool engineRPMChanged = (engineRPM != prevEngineRPM);
+  bool vehicleSpeedChanged = (vehicleSpeed != prevVehicleSpeed);
+  bool engineCoolantTempChanged = (engineCoolantTemp != prevEngineCoolantTemp);
+
+  prevEngineRPM = engineRPM;
+  prevVehicleSpeed = vehicleSpeed;
+  prevEngineCoolantTemp = engineCoolantTemp;
+
+  if (engineRPMChanged)
   {
-
-    // VEHICLE SPEED VALUE
-    tft.fillRect(60, 40, 220, 95, BLACK);
-    tft.setTextSize(12);
-    tft.setTextColor(WHITE);
-    tft.setCursor(60, 40);
-    tft.println(vehicleSpeed_s);
-
     // ENGINE RPM VALUE
     tft.fillRect(60, 200, 220, 60, BLACK);
     if (engineRPM > SHIFT_RPM_THRESHOLD)
@@ -112,7 +108,20 @@ void loop()
     tft.setTextSize(8);
     tft.setCursor(60, 200);
     tft.println(engineRPM_s);
+  }
 
+  if (vehicleSpeedChanged)
+  {
+    // VEHICLE SPEED VALUE
+    tft.fillRect(60, 40, 220, 95, BLACK);
+    tft.setTextSize(12);
+    tft.setTextColor(WHITE);
+    tft.setCursor(60, 40);
+    tft.println(vehicleSpeed_s);
+  }
+
+  if (engineCoolantTempChanged)
+  {
     // ENGINE COOLANT TEMP VALUE
     tft.fillRect(60, 330, 95, 60, BLACK);
     if (engineCoolantTemp < MIN_ENGINE_TEMP)
