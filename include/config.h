@@ -1,0 +1,19 @@
+#ifndef REV_INDICATOR_OBD2_CONFIG_H
+#define REV_INDICATOR_OBD2_CONFIG_H
+#include <Arduino.h>
+
+#define MAX_INPUT_VALUE 5000
+#define MIN_INPUT_VALUE 1000
+#define MAX_OUTPUT_VALUE 20
+#define SHIFT_RPM_THRESHOLD 4700
+#define MIN_ENGINE_TEMP 50
+
+#define BLACK 0x0000
+#define BLUE 0x001F
+#define RED 0xF800
+#define GREEN 0x07E0
+#define CYAN 0x07FF
+#define MAGENTA 0xF81F
+#define YELLOW 0xFFE0
+#define WHITE 0xFFFF
+#endif //REV_INDICATOR_OBD2_CONFIG_H
