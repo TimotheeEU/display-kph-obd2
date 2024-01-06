@@ -32,24 +32,24 @@ void setup()
   // STARTUP ANIMATION
   startupSeq();
 
-  while (!Serial)
-    ;
+  // while (!Serial)
+  //   ;
 
-  // CONNECTION WITH CAN
-  while (true)
-  {
-    attemptConn();
+  // // CONNECTION WITH CAN
+  // while (true)
+  // {
+  //   attemptConn();
 
-    if (!OBD2.begin())
-    {
-      failedConn();
-    }
-    else
-    {
-      succesfullConn();
-      break;
-    }
-  }
+  //   if (!OBD2.begin())
+  //   {
+  //     failedConn();
+  //   }
+  //   else
+  //   {
+  //     succesfullConn();
+  //     break;
+  //   }
+  // }
 
   // SHOW TOP AND BOTTOM TITLE + VALUE TITLE AND SUBTEXT
   valueTitleText();
@@ -123,7 +123,7 @@ void loop()
   if (engineCoolantTempChanged)
   {
     // ENGINE COOLANT TEMP VALUE
-    tft.fillRect(60, 330, 95, 60, BLACK);
+    tft.fillRect(60, 330, 140, 60, BLACK);
     if (engineCoolantTemp < MIN_ENGINE_TEMP)
     {
       tft.setTextColor(RED);
@@ -214,7 +214,7 @@ void valueTitleText()
   tft.print("RPM");
 
   // ENGINE COOLANT TEMP SUBTEXT
-  tft.setCursor(160, 330);
+  tft.setCursor(200, 330);
   tft.setTextSize(4);
   tft.print((char)247);
   tft.setTextSize(6);
